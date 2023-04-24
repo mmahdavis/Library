@@ -33,3 +33,13 @@ Route::middleware([
         return Inertia::render('HomeView');
     })->name('dashboard');
 });
+
+Route::middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified',
+])->prefix('dashboard')->group(function () {
+    Route::get('/tables', function () {return Inertia::render('TablesView');})->name('tables');
+    Route::get('/forms', function () {return Inertia::render('HomeView');})->name('forms');
+    Route::get('/profile', function () {return Inertia::render('HomeView');})->name('profile');
+});

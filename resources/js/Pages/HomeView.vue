@@ -36,7 +36,7 @@ onMounted(() => {
 
 const mainStore = useMainStore();
 
-const clientBarItems = computed(() => mainStore.clients.slice(0, 4));
+const clientBarItems = computed(() => mainStore.books.slice(0, 4));
 
 const transactionBarItems = computed(() => mainStore.history);
 </script>

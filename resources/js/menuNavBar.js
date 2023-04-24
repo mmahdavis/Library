@@ -40,7 +40,7 @@ export default [
       {
         icon: mdiAccount,
         label: "My Profile",
-        // route: "/profile",
+        route: "profile",
       },
       {
         icon: mdiCogOutline,

@@ -15,7 +15,7 @@ defineProps({
 
 const mainStore = useMainStore();
 
-const items = computed(() => mainStore.clients);
+const items = computed(() => mainStore.books);
 
 const isModalActive = ref(false);
 
@@ -104,48 +104,48 @@ const checked = (isChecked, client) => {
         <th v-if="checkable" />
         <th />
         <th>Name</th>
-        <th>Company</th>
-        <th>City</th>
+        <th>Code</th>
+        <th>Price</th>
         <th>Progress</th>
         <th>Created</th>
         <th />
       </tr>
     </thead>
     <tbody>
-      <tr v-for="client in itemsPaginated" :key="client.id">
+      <tr v-for="book in itemsPaginated" :key="book.id">
         <TableCheckboxCell
           v-if="checkable"
-          @checked="checked($event, client)"
+          @checked="checked($event, book)"
         />
         <td class="border-b-0 lg:w-6 before:hidden">
           <UserAvatar
-            :username="client.name"
+            :username="book.name"
             class="w-24 h-24 mx-auto lg:w-6 lg:h-6"
           />
         </td>
         <td data-label="Name">
-          {{ client.name }}
+          {{ book.name }}
         </td>
-        <td data-label="Company">
-          {{ client.company }}
+        <td data-label="Code">
+          {{ book.code }}
         </td>
-        <td data-label="City">
-          {{ client.city }}
+        <td data-label="Price">
+          {{ book.price }}
         </td>
         <td data-label="Progress" class="lg:w-32">
           <progress
             class="flex w-2/5 self-center lg:w-full"
             max="100"
-            :value="client.progress"
+            :value="Math.random()*100"
           >
-            {{ client.progress }}
+            {{ book.progress }}
           </progress>
         </td>
-        <td data-label="Created" class="lg:w-1 whitespace-nowrap">
+        <td data-label="Created_at" class="lg:w-1 whitespace-nowrap">
           <small
             class="text-gray-500 dark:text-slate-400"
-            :title="client.created"
-            >{{ client.created }}</small
+            :title="book.created_at"
+            >{{ book.created_at }}</small
           >
         </td>
         <td class="before:hidden lg:w-1 whitespace-nowrap">
