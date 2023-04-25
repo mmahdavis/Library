@@ -5,7 +5,6 @@ import {
   mdiAccountMultiple,
   mdiCartOutline,
   mdiChartTimelineVariant,
-  mdiMonitorCellphone,
   mdiReload,
   mdiGithub,
   mdiChartPie,
@@ -15,14 +14,12 @@ import LineChart from "@/Components/Charts/LineChart.vue";
 import SectionMain from "@/Components/SectionMain.vue";
 import CardBoxWidget from "@/Components/CardBoxWidget.vue";
 import CardBox from "@/Components/CardBox.vue";
-import TableSampleClients from "@/Components/TableSampleClients.vue";
-import NotificationBar from "@/Components/NotificationBar.vue";
+import Books from "@/Components/Tables/Books.vue";
 import BaseButton from "@/Components/BaseButton.vue";
 import CardBoxTransaction from "@/Components/CardBoxTransaction.vue";
 import CardBoxClient from "@/Components/CardBoxClient.vue";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionTitleLineWithButton from "@/Components/SectionTitleLineWithButton.vue";
-import SectionBannerStarOnGitHub from "@/Components/SectionBannerStarOnGitHub.vue";
 
 const chartData = ref(null);
 
@@ -38,7 +35,7 @@ const mainStore = useMainStore();
 
 const clientBarItems = computed(() => mainStore.books.slice(0, 4));
 
-const transactionBarItems = computed(() => mainStore.history);
+const transactionBarItems = computed(() => mainStore.magazines.slice(0, 4));
 </script>
 
 <template>
@@ -138,7 +135,7 @@ const transactionBarItems = computed(() => mainStore.history);
       </NotificationBar> -->
 
       <CardBox has-table>
-        <TableSampleClients />
+        <Books perPage="5"/>
       </CardBox>
     </SectionMain>
   </LayoutAuthenticated>

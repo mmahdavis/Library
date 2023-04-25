@@ -17,12 +17,12 @@ return new class extends Migration
             $table->foreignId('tag_id')->nullable()->constrained('tags')->nullOnDelete();
             $table->string('name');
             $table->string('slug');
+            $table->integer('price')->default(0);
             $table->string('cover_type')->nullable();
             $table->string('paper_type')->nullable();
             $table->string('publication_year')->nullable();
             $table->string('publication_month')->nullable();
             $table->integer('page')->nullable();
-            $table->integer('price')->default(0);
             $table->integer('length')->nullable();
             $table->integer('width')->nullable();
             $table->integer('height')->nullable();

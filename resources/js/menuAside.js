@@ -1,16 +1,17 @@
 import {
     mdiAccountCircle,
     mdiMonitor,
-    mdiGithub,
-    mdiLock,
-    mdiAlertCircle,
     mdiSquareEditOutline,
-    mdiTable,
+    mdiBookMultiple,
     mdiViewList,
-    mdiTelevisionGuide,
-    mdiResponsive,
-    mdiPalette,
-    mdiReact,
+    mdiPublish,
+    mdiAbjadArabic,
+    mdiTranslateVariant,
+    mdiTagMultiple,
+    mdiShape,
+    mdiDatabase,
+    mdiMagazinePistol,
+    mdiFileStarFourPoints,
 } from "@mdi/js";
 
 export default [
@@ -20,36 +21,49 @@ export default [
         label: "Dashboard",
     },
     {
-        route: "tables",
-        label: "Tables",
-        icon: mdiTable,
+        route: "books",
+        label: "Books",
+        icon: mdiBookMultiple,
     },
     {
-        route: "forms",
-        label: "Forms",
-        icon: mdiSquareEditOutline,
+        route: "magazines",
+        label: "Magazines",
+        icon: mdiMagazinePistol,
     },
     {
-        route: "profile",
-        label: "Profile",
-        icon: mdiAccountCircle,
+        route: "special_issue",
+        label: "Special Issues",
+        icon: mdiFileStarFourPoints,
     },
-    //   {
-    //     label: "Dropdown",
-    //     icon: mdiViewList,
-    //     menu: [
-    //       {
-    //         label: "Item One",
-    //       },
-    //       {
-    //         label: "Item Two",
-    //       },
-    //     ],
-    //   },
-    //   {
-    //     href: "https://github.com/justboil/admin-one-vue-tailwind",
-    //     label: "GitHub",
-    //     icon: mdiGithub,
-    //     target: "_blank",
-    //   },
+    {
+        label: "Books Data",
+        icon: mdiDatabase,
+        menu: [
+            {
+                route: "writers",
+                label: "Writers",
+                icon: mdiAbjadArabic,
+            },
+            {
+                route: "publisers",
+                label: "Publisers",
+                icon: mdiPublish,
+            },
+            {
+                route: "translators",
+                label: "Translators",
+                icon: mdiTranslateVariant,
+            },
+            {
+                route: "tags",
+                label: "Tags",
+                icon: mdiTagMultiple,
+            },
+            {
+                route: "categories",
+                label: "Categories",
+                icon: mdiShape,
+            },
+        ],
+    },
 ];

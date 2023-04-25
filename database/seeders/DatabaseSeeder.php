@@ -20,6 +20,8 @@ class DatabaseSeeder extends Seeder
             TagSeeder::class,
             CategorySeeder::class,
             BookSeeder::class,
+            SpecialIssueSeeder::class,
+            MagazineSeeder::class,
             CommentSeeder::class,
         ]);
         // \App\Models\User::factory(10)->create();
