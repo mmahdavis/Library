@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Resources\BookCollection;
+use App\Models\Book;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -29,14 +31,24 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->prefix('dashboard')->group(function () {
-    Route::get('', function () {return Inertia::render('HomeView');})->name('dashboard');
-    Route::get('/books', function () {return Inertia::render('BooksView');})->name('books');
-    Route::get('/Writers', function () {return Inertia::render('WritersView');})->name('writers');
-    Route::get('/Publisers', function () {return Inertia::render('PublishersView');})->name('publisers');
-    Route::get('/Translators', function () {return Inertia::render('TranslatorsView');})->name('translators');
-    Route::get('/Tags', function () {return Inertia::render('TagsView');})->name('tags');
-    Route::get('/Categories', function () {return Inertia::render('CategoriesView');})->name('categories');
-    Route::get('/magazines', function () {return Inertia::render('MagazinesView');})->name('magazines');
-    Route::get('/special_issue', function () {return Inertia::render('SpecialIssuesView');})->name('special_issue');
-    Route::get('/profile', function () {return Inertia::render('HomeView');})->name('profile');
+    Route::get('', function () {
+        return Inertia::render('HomeView'); })->name('dashboard');
+    Route::get('/books', function () {
+        return Inertia::render('BooksView', ['books' => new BookCollection(Book::all())]); })->name('books');
+    Route::get('/Writers', function () {
+        return Inertia::render('WritersView'); })->name('writers');
+    Route::get('/Publisers', function () {
+        return Inertia::render('PublishersView'); })->name('publisers');
+    Route::get('/Translators', function () {
+        return Inertia::render('TranslatorsView'); })->name('translators');
+    Route::get('/Tags', function () {
+        return Inertia::render('TagsView'); })->name('tags');
+    Route::get('/Categories', function () {
+        return Inertia::render('CategoriesView'); })->name('categories');
+    Route::get('/magazines', function () {
+        return Inertia::render('MagazinesView'); })->name('magazines');
+    Route::get('/special_issue', function () {
+        return Inertia::render('SpecialIssuesView'); })->name('special_issue');
+    Route::get('/profile', function () {
+        return Inertia::render('HomeView'); })->name('profile');
 });
