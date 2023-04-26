@@ -12,6 +12,11 @@ class SpecialIssue extends Model
     use HasFactory;
     use HasApiTokens;
 
+    protected $fillable = [
+        'name',
+        'slug',
+    ];
+
     /**
      * Get the category that owns the SpecialIssue
      */

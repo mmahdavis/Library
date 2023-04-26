@@ -11,6 +11,12 @@ export const useMainStore = defineStore("main", {
 
         /* Field focus with ctrl+k (to register only once) */
         isFieldFocusRegistered: false,
+
+        categories: [],
+        tags: [],
+        publishers: [],
+        translators: [],
+        writers: [],
     }),
     actions: {
         setUser(payload) {
@@ -24,5 +30,18 @@ export const useMainStore = defineStore("main", {
                 this.userAvatar = payload.avatar;
             }
         },
+        async getExternalData() {
+            try {
+                const data = await axios('http://localhost:8000/api/v1/bookdata').then((r) => { return r.data })
+                this.categories = data.categories
+                this.tags = data.tags
+                this.publishers = data.publishers
+                this.translators = data.translators
+                this.writers = data.writers
+            } catch (error) {
+                alert(error)
+                console.log(error);
+            }
+        }
     },
 });

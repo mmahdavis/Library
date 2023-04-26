@@ -40,6 +40,16 @@ export default [
         icon: mdiDatabase,
         menu: [
             {
+                route: "categories",
+                label: "Categories",
+                icon: mdiShape,
+            },
+            {
+                route: "tags",
+                label: "Tags",
+                icon: mdiTagMultiple,
+            },
+            {
                 route: "writers",
                 label: "Writers",
                 icon: mdiAbjadArabic,
@@ -53,16 +63,6 @@ export default [
                 route: "translators",
                 label: "Translators",
                 icon: mdiTranslateVariant,
-            },
-            {
-                route: "tags",
-                label: "Tags",
-                icon: mdiTagMultiple,
-            },
-            {
-                route: "categories",
-                label: "Categories",
-                icon: mdiShape,
             },
         ],
     },

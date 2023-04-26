@@ -12,6 +12,10 @@ class Category extends Model
     use HasFactory;
     use HasApiTokens;
 
+    protected $fillable = [
+        'name',
+        'slug',
+    ];
     public function books(): HasMany
     {
         return $this->hasMany(Book::class);

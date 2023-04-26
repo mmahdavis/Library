@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CategoryCollection;
+use App\Http\Resources\CategoryResource;
+use App\Models\Category;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
     public function index()
     {
+        return new CategoryCollection(Category::orderByDesc('created_at')->get());
     }
 
     /**
@@ -17,6 +21,7 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
+        return new CategoryResource(Category::find($id));
     }
 
     /**
@@ -26,6 +31,12 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
+        $validatedData = $request->validate([
+            'name' => 'required',
+            'slug' => 'required|unique:categories',
+        ]);
+        Category::create($validatedData);
+        return response()->json($validatedData);
     }
 
     /**
@@ -34,8 +45,14 @@ class CategoryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Category $category)
     {
+        $validatedData = $request->validate([
+            'name' => 'required',
+            'slug' => 'required|unique:categories,slug,' . $request->slug . ',slug',
+        ]);
+        $category->update($validatedData);
+        return response()->json($category);
     }
 
     /**
@@ -43,7 +60,9 @@ class CategoryController extends Controller
      *
      * @param  int  $id
      */
-    public function destroy($id)
+    public function destroy(Category $category)
     {
+        $category->delete();
+        return response()->json('deleted');
     }
 }

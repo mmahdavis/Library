@@ -34,16 +34,16 @@ Route::middleware([
     Route::get('', function () {
         return Inertia::render('HomeView'); })->name('dashboard');
     Route::get('/books', function () {
-        return Inertia::render('BooksView', ['books' => new BookCollection(Book::all())]); })->name('books');
-    Route::get('/Writers', function () {
+        return Inertia::render('BooksView'); })->name('books');
+    Route::get('/writers', function () {
         return Inertia::render('WritersView'); })->name('writers');
-    Route::get('/Publisers', function () {
+    Route::get('/publisers', function () {
         return Inertia::render('PublishersView'); })->name('publisers');
-    Route::get('/Translators', function () {
+    Route::get('/translators', function () {
         return Inertia::render('TranslatorsView'); })->name('translators');
-    Route::get('/Tags', function () {
+    Route::get('/tags', function () {
         return Inertia::render('TagsView'); })->name('tags');
-    Route::get('/Categories', function () {
+    Route::get('/categories', function () {
         return Inertia::render('CategoriesView'); })->name('categories');
     Route::get('/magazines', function () {
         return Inertia::render('MagazinesView'); })->name('magazines');

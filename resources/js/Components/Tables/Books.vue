@@ -2,14 +2,14 @@
 import { computed, reactive, ref } from "vue";
 import moment from 'moment';
 import { mdiEye, mdiPencil, mdiTrashCan, mdiUpdate } from "@mdi/js";
-import CardBoxModal from "@/Components/CardBoxModal.vue";
 import TableCheckboxCell from "@/Components/TableCheckboxCell.vue";
 import BaseLevel from "@/Components/BaseLevel.vue";
 import BaseButtons from "@/Components/BaseButtons.vue";
 import BaseButton from "@/Components/BaseButton.vue";
 import UserAvatar from "@/Components/UserAvatar.vue";
-import CardBox from "@/Components/CardBox.vue";
 import axios from "axios";
+import CardBox from "@/Components/CardBox.vue";
+import CardBoxModal from "@/Components/CardBoxModal.vue";
 import NotificationBarInCard from "@/Components/NotificationBarInCard.vue";
 import FormField from "@/Components/FormField.vue";
 import FormControl from "@/Components/FormControl.vue";
@@ -19,13 +19,17 @@ const prop = defineProps({
     checkable: Boolean,
     perPage: Number,
     books: Object,
+    selectOptions: Object,
 });
+const emit = defineEmits(['updateBooks'])
+
 const Currency = new Intl.NumberFormat("fa-IR", { style: "currency", currency: "IRR" })
+
 const items = computed(() => prop.books);
 
 const isModalUpdateActive = ref(false);
 
-const isModalDangerActive = ref(false);
+const isModalDeleteActive = ref(false);
 
 const perPage = ref(prop.perPage ?? 20);
 
@@ -54,124 +58,107 @@ const pagesList = computed(() => {
     return pagesList;
 });
 
-const remove = (arr, cb) => {
-    const newArr = [];
-
-    arr.forEach((item) => {
-        if (!cb(item)) {
-            newArr.push(item);
-        }
-    });
-
-    return newArr;
-};
-
-const checked = (isChecked, client) => {
-    if (isChecked) {
-        checkedRows.value.push(client);
-    } else {
-        checkedRows.value = remove(
-            checkedRows.value,
-            (row) => row.id === client.id
-        );
-    }
-};
-
-const selectOptions = {
-    category_id: [
-        { id: 1, label: "cat1" },
-        { id: 2, label: "cat2" },
-        { id: 3, label: "cat3" },
-    ],
-    tag_id: [
-        { id: 1, label: "tag1" },
-        { id: 2, label: "tag2" },
-        { id: 3, label: "tag3" },
-    ],
-    publisher_id: [
-        { id: 1, label: "pub1" },
-        { id: 2, label: "pub2" },
-        { id: 3, label: "pub3" },
-    ],
-    translator_id: [
-        { id: 1, label: "tr1" },
-        { id: 2, label: "tr2" },
-        { id: 3, label: "tr3" },
-    ],
-    writer_id: [
-        { id: 1, label: "wr1" },
-        { id: 2, label: "wr1" },
-        { id: 3, label: "wr1" },
-    ],
-};
-
 const form = reactive({
-    category_id: selectOptions.category_id[0],
-    tag_id: selectOptions.tag_id[0],
-    publisher_id: selectOptions.publisher_id[0],
-    translator_id: selectOptions.translator_id[0],
-    writer_id: selectOptions.writer_id[0],
+    category_id: prop.selectOptions.category_id[0],
+    tag_id: prop.selectOptions.tag_id[0],
+    publisher_id: prop.selectOptions.publisher_id[0],
+    translator_id: prop.selectOptions.translator_id[0],
+    writer_id: prop.selectOptions.writer_id[0],
+    id: "",
     code: "",
     name: "",
     price: "",
-    image: "https://fakeimg.pl/320/",
-    // translator_id: selectOptions[0],
+    image: "https://fakeimg.pl/320/"
 });
 
+const notificationText = ref('');
 const formStatusCurrent = ref(0);
 const formStatusOptions = ["info", "success", "danger", "warning"];
-const formStatusWithHeader = ref(true);
-const formStatusSubmit = () => {
-    formStatusCurrent.value = formStatusOptions[formStatusCurrent.value + 1]
-        ? formStatusCurrent.value + 1
-        : 0;
+const formUpdateSubmit = () => {
+    axios.put('http://localhost:8000/api/v1/books/' + form.id, {
+        category_id: 1,
+        tag_id: 1,
+        publisher_id: 1,
+        translator_id: 1,
+        writer_id: 1,
+        code: form.code,
+        name: form.name,
+        price: form.price,
+        image: form.image
+    })
+        .then(function (response) {
+            isModalUpdateActive.value = false;
+            emit('updateBooks')
+        })
+        .catch(function (error) {
+            notificationText.value = error;
+            formStatusCurrent.value = 2
+        });
 };
 
 function editDetails(book) {
     isModalUpdateActive.value = true;
+    form.id = book.id
     form.code = book.code;
     form.name = book.name;
     form.price = book.price;
-    from.image = book.image;
+    form.image = book.image;
+    form.category_id = prop.selectOptions.category_id[book.category_id ?? 0]
+    form.tag_id = prop.selectOptions.tag_id[book.tag_id ?? 0]
+    form.publisher_id = prop.selectOptions.publisher_id[book.publisher_id ?? 0]
+    form.translator_id = prop.selectOptions.translator_id[book.translator_id ?? 0]
+    form.writer_id = prop.selectOptions.writer_id[book.writer_id ?? 0]
+}
+
+const item = ref('')
+function deleteItem(id) {
+    isModalDeleteActive.value = true
+    item.value = id
+}
+function confirmDelete() {
+    axios.delete('http://localhost:8000/api/v1/books/' + item.value)
+    isModalDeleteActive.value = false
+    emit('updateBooks')
 }
 </script>
 
 <template>
-    <CardBoxModal v-model="isModalUpdateActive" title="Add New Book" has-cancel>
-                <template v-slot:Notification>
-                    <NotificationBarInCard :color="formStatusOptions[formStatusCurrent]"
-                        :is-placed-with-header="formStatusWithHeader">
-                        <span><b class="capitalize">{{
-                            formStatusOptions[formStatusCurrent]
-                        }}</b>
-                            state</span>
-                    </NotificationBarInCard>
-                </template>
-                <CardBox is-form is-hoverable @submit.prevent="formStatusSubmit">
-                    <FormField label="Required Data">
-                        <FormControl v-model="form.name" :icon="mdiBookAlphabet" placeholder="Book Name" />
-                        <FormControl v-model="form.code" :icon="mdiBarcode" placeholder="Book Code" />
-                        <FormControl v-model="form.price" :icon="mdiCurrencyUsd" placeholder="Book Price" />
-                        <FormControl v-model="form.image" :icon="mdiImageArea" placeholder="Book Image" />
-                    </FormField>
-                    <FormField label="External Data">
-                        <FormControl v-model="form.category_id" :options="selectOptions.category_id" />
-                        <FormControl v-model="form.tag_id" :options="selectOptions.tag_id" />
-                        <FormControl v-model="form.publisher_id" :options="selectOptions.publisher_id" />
-                        <FormControl v-model="form.translator_id" :options="selectOptions.translator_id" />
-                        <FormControl v-model="form.writer_id" :options="selectOptions.writer_id" />
-                    </FormField>
-                    <BaseDivider />
-                    <BaseButtons>
-                        <BaseButton type="submit" color="info" label="Submit" />
-                        <BaseButton type="reset" color="info" outline label="Reset" />
-                    </BaseButtons>
-                </CardBox>
-            </CardBoxModal>
+    <CardBoxModal v-model="isModalUpdateActive" title="Update Book" has-cancel>
+        <template v-slot:Notification>
+            <NotificationBarInCard v-if=notificationText :color="formStatusOptions[formStatusCurrent]"
+                :is-placed-with-header="true">
+                <span><b class="capitalize">{{
+                    formStatusOptions[formStatusCurrent]
+                }}</b>
+                    {{ notificationText }}</span>
+            </NotificationBarInCard>
+        </template>
+        <CardBox is-form is-hoverable @submit.prevent="formUpdateSubmit">
+            <FormField label="Required Data">
+                <FormControl v-model="form.name" :icon="mdiBookAlphabet" placeholder="Book Name" required />
+                <FormControl v-model="form.code" :icon="mdiBarcode" placeholder="Book Code" required />
+                <FormControl v-model="form.price" :icon="mdiCurrencyUsd" placeholder="Book Price" required />
+                <FormControl v-model="form.image" :icon="mdiImageArea" placeholder="Book Image" required />
+            </FormField>
+            <FormField label="External Data">
+                <FormControl v-model="form.category_id" :options="selectOptions.category_id" />
+                <FormControl v-model="form.tag_id" :options="selectOptions.tag_id" />
+                <FormControl v-model="form.publisher_id" :options="selectOptions.publisher_id" />
+                <FormControl v-model="form.translator_id" :options="selectOptions.translator_id" />
+                <FormControl v-model="form.writer_id" :options="selectOptions.writer_id" />
+            </FormField>
+            <BaseDivider />
+            <BaseButtons>
+                <BaseButton type="submit" color="info" label="Submit" />
+                <BaseButton type="reset" color="info" outline label="Reset" />
+            </BaseButtons>
+        </CardBox>
+    </CardBoxModal>
 
-    <CardBoxModal v-model="isModalDangerActive" title="Please confirm" button="danger" has-cancel>
-        <p>Lorem ipsum dolor sit amet <b>adipiscing elit</b></p>
-        <p>This is sample modal</p>
+    <CardBoxModal v-model="isModalDeleteActive" title="Please Confirm to Delete" button="danger" has-cancel>
+        <BaseButtons>
+            <BaseButton color="danger" label="DELETE" @click="confirmDelete()" />
+        </BaseButtons>
     </CardBoxModal>
 
     <div v-if="checkedRows.length" class="p-3 bg-gray-100/50 dark:bg-slate-800">
@@ -215,7 +202,7 @@ function editDetails(book) {
                 <td class="before:hidden lg:w-1 whitespace-nowrap">
                     <BaseButtons type="justify-start lg:justify-end" no-wrap>
                         <BaseButton color="info" :icon="mdiPencil" small @click="editDetails(book)" />
-                        <BaseButton color="danger" :icon="mdiTrashCan" small @click="isModalDangerActive = true" />
+                        <BaseButton color="danger" :icon="mdiTrashCan" small @click="deleteItem(book.id)" />
                     </BaseButtons>
                 </td>
             </tr>

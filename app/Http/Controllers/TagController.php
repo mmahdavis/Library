@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\TagCollection;
+use App\Http\Resources\TagResource;
+use App\Models\Tag;
 use Illuminate\Http\Request;
 
 class TagController extends Controller
 {
     public function index()
     {
+        return new TagCollection(Tag::orderByDesc('created_at')->get());
     }
 
     /**
@@ -17,6 +21,7 @@ class TagController extends Controller
      */
     public function show($id)
     {
+        return new TagResource(Tag::find($id));
     }
 
     /**
@@ -26,6 +31,12 @@ class TagController extends Controller
      */
     public function store(Request $request)
     {
+        $validatedData = $request->validate([
+            'name' => 'required',
+            'slug' => 'required|unique:tags',
+        ]);
+        Tag::create($validatedData);
+        return response()->json($validatedData);
     }
 
     /**
@@ -34,8 +45,14 @@ class TagController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Tag $tag)
     {
+        $validatedData = $request->validate([
+            'name' => 'required',
+            'slug' => 'required|unique:tags,slug,' . $request->slug . ',slug',
+        ]);
+        $tag->update($validatedData);
+        return response()->json($tag);
     }
 
     /**
@@ -43,7 +60,9 @@ class TagController extends Controller
      *
      * @param  int  $id
      */
-    public function destroy($id)
+    public function destroy(Tag $tag)
     {
+        $tag->delete();
+        return response()->json('deleted');
     }
 }

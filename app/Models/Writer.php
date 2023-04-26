@@ -11,6 +11,12 @@ class Writer extends Model
 {
     use HasFactory;
     use HasApiTokens;
+
+    protected $fillable = [
+        'name',
+        'slug',
+    ];
+
     /**
      * Get all of the books for the Writer
      */

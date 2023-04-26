@@ -17,45 +17,40 @@ import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.vue";
 import BaseButton from "@/components/BaseButton.vue";
 import CardBoxComponentEmpty from "@/Components/CardBoxComponentEmpty.vue";
-import { reactive, ref } from "vue";
+import { onBeforeMount, onMounted, reactive, ref } from "vue";
 import CardBoxModal from "@/Components/CardBoxModal.vue";
 import FormField from "@/Components/FormField.vue";
 import FormControl from "@/Components/FormControl.vue";
 import BaseDivider from "@/Components/BaseDivider.vue";
 import BaseButtons from "@/Components/BaseButtons.vue";
 import NotificationBarInCard from "@/Components/NotificationBarInCard.vue";
+import { useMainStore } from "@/Stores/main";
+import axios from "axios";
 
-defineProps({ books: Object })
-
+const selectOptions = reactive({
+    category_id: [ { "id": 0, "label": "Select Category" }],
+    tag_id: [{ "id": 0, "label": "Select Tag" }],
+    publisher_id: [{ "id": 0, "label": "Select Publisher" }],
+    translator_id: [{ "id": 0, "label": "Select Tranlator" }],
+    writer_id: [{ "id": 0, "label": "Select Writer" }],
+});
+const books = ref();
+async function getBooks() {
+    await axios.get('http://localhost:8000/api/v1/books').then((r) => { books.value = r.data; });
+}
+async function getBookdata() {
+    await axios.get('http://localhost:8000/api/v1/bookdata')
+        .then((r) => {
+            selectOptions.category_id.push(...r.data.categories);
+            selectOptions.tag_id.push(...r.data.tags);
+            selectOptions.publisher_id.push(...r.data.publishers);
+            selectOptions.translator_id.push(...r.data.translators);
+            selectOptions.writer_id.push(...r.data.writers);
+        });
+}
+getBooks()
+getBookdata()
 const isModalInsertActive = ref(false);
-
-const selectOptions = {
-    category_id: [
-        { id: 1, label: "cat1" },
-        { id: 2, label: "cat2" },
-        { id: 3, label: "cat3" },
-    ],
-    tag_id: [
-        { id: 1, label: "tag1" },
-        { id: 2, label: "tag2" },
-        { id: 3, label: "tag3" },
-    ],
-    publisher_id: [
-        { id: 1, label: "pub1" },
-        { id: 2, label: "pub2" },
-        { id: 3, label: "pub3" },
-    ],
-    translator_id: [
-        { id: 1, label: "tr1" },
-        { id: 2, label: "tr2" },
-        { id: 3, label: "tr3" },
-    ],
-    writer_id: [
-        { id: 1, label: "wr1" },
-        { id: 2, label: "wr1" },
-        { id: 3, label: "wr1" },
-    ],
-};
 
 const form = reactive({
     category_id: selectOptions.category_id[0],
@@ -67,16 +62,31 @@ const form = reactive({
     name: "",
     price: "",
     image: "https://fakeimg.pl/320/",
-    // translator_id: selectOptions[0],
 });
 
+const notificationText = ref('');
 const formStatusCurrent = ref(0);
 const formStatusOptions = ["info", "success", "danger", "warning"];
-const formStatusWithHeader = ref(true);
-const formStatusSubmit = () => {
-    formStatusCurrent.value = formStatusOptions[formStatusCurrent.value + 1]
-        ? formStatusCurrent.value + 1
-        : 0;
+const fromInsertSubmit = () => {
+    axios.post('http://localhost:8000/api/v1/books', {
+        category_id: 1,
+        tag_id: 1,
+        publisher_id: 1,
+        translator_id: 1,
+        writer_id: 1,
+        code: form.code,
+        name: form.name,
+        price: form.price,
+        image: form.image
+    })
+        .then(function (response) {
+            notificationText.value = 'Created Sucessfuly';
+            formStatusCurrent.value = 1;
+        })
+        .catch(function (error) {
+            notificationText.value = error;
+            formStatusCurrent.value = 2
+        });
 };
 </script>
 
@@ -85,20 +95,20 @@ const formStatusSubmit = () => {
         <SectionMain>
             <CardBoxModal v-model="isModalInsertActive" title="Add New Book" has-cancel>
                 <template v-slot:Notification>
-                    <NotificationBarInCard :color="formStatusOptions[formStatusCurrent]"
-                        :is-placed-with-header="formStatusWithHeader">
+                    <NotificationBarInCard v-if=notificationText :color="formStatusOptions[formStatusCurrent]"
+                        :is-placed-with-header="true">
                         <span><b class="capitalize">{{
                             formStatusOptions[formStatusCurrent]
                         }}</b>
-                            state</span>
+                            {{ notificationText }}</span>
                     </NotificationBarInCard>
                 </template>
-                <CardBox is-form is-hoverable @submit.prevent="formStatusSubmit">
+                <CardBox is-form is-hoverable @submit.prevent="fromInsertSubmit">
                     <FormField label="Required Data">
-                        <FormControl v-model="form.name" :icon="mdiBookAlphabet" placeholder="Book Name" />
-                        <FormControl v-model="form.code" :icon="mdiBarcode" placeholder="Book Code" />
-                        <FormControl v-model="form.price" :icon="mdiCurrencyUsd" placeholder="Book Price" />
-                        <FormControl v-model="form.image" :icon="mdiImageArea" placeholder="Book Image" />
+                        <FormControl v-model="form.name" :icon="mdiBookAlphabet" placeholder="Book Name" required />
+                        <FormControl v-model="form.code" :icon="mdiBarcode" placeholder="Book Code" required />
+                        <FormControl v-model="form.price" :icon="mdiCurrencyUsd" placeholder="Book Price" required />
+                        <FormControl v-model="form.image" :icon="mdiImageArea" placeholder="Book Image" required />
                     </FormField>
                     <FormField label="External Data">
                         <FormControl v-model="form.category_id" :options="selectOptions.category_id" />
@@ -121,7 +131,7 @@ const formStatusSubmit = () => {
             </SectionTitleLineWithButton>
 
             <CardBox v-if=books class="mb-6" has-table>
-                <Books checkable :books=books.data />
+                <Books checkable :books=books.data :selectOptions=selectOptions @update-books="getBooks()" />
             </CardBox>
 
             <CardBox v-else>

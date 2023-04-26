@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\MagazineCollection;
+use App\Http\Resources\MagazineResource;
+use App\Models\Magazine;
 use Illuminate\Http\Request;
 
 class MagazineController extends Controller
 {
     public function index()
     {
+        return new MagazineCollection(Magazine::orderByDesc('created_at')->get());
     }
 
     /**
@@ -17,6 +21,7 @@ class MagazineController extends Controller
      */
     public function show($id)
     {
+        return new MagazineResource(Magazine::find($id));
     }
 
     /**
@@ -26,6 +31,14 @@ class MagazineController extends Controller
      */
     public function store(Request $request)
     {
+        $validatedData = $request->validate([
+            'image' => 'required',
+            'name' => 'required',
+            'slug' => 'required|unique:magazines',
+            'price' => 'required',
+        ]);
+        Magazine::create($validatedData);
+        return response()->json($validatedData);
     }
 
     /**
@@ -34,8 +47,16 @@ class MagazineController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Magazine $magazine)
     {
+        $validatedData = $request->validate([
+            'image' => 'required',
+            'name' => 'required',
+            'slug' => 'required|unique:magazines,slug,' . $request->slug . ',slug',
+            'price' => 'required'
+        ]);
+        $magazine->update($validatedData);
+        return response()->json($magazine);
     }
 
     /**
@@ -43,7 +64,9 @@ class MagazineController extends Controller
      *
      * @param  int  $id
      */
-    public function destroy($id)
+    public function destroy(Magazine $magazine)
     {
+        $magazine->delete();
+        return response()->json('deleted');
     }
 }

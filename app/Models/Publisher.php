@@ -12,6 +12,12 @@ class Publisher extends Model
     use HasFactory;
     use HasApiTokens;
 
+    protected $fillable = [
+        'name',
+        'slug',
+        'image',
+    ];
+
     /**
      * Get all of the book for the Publisher
      */

@@ -5,6 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Resources\BookCollection;
 use App\Http\Resources\BookResource;
 use App\Models\Book;
+use App\Models\Category;
+use App\Models\Publisher;
+use App\Models\Tag;
+use App\Models\Translator;
+use App\Models\Writer;
 use Illuminate\Http\Request;
 
 class BookController extends Controller
@@ -16,7 +21,17 @@ class BookController extends Controller
      */
     public function index()
     {
-        return new BookCollection(Book::all());
+        return new BookCollection(Book::orderByDesc('created_at')->get());
+    }
+    public function data()
+    {
+        return $data = [
+            'categories'=> Category::all('id', 'name AS label'),
+            'tags'=> Tag::all('id', 'name AS label'),
+            'publishers'=> Publisher::all('id', 'name AS label'),
+            'translators'=> Translator::all('id', 'name AS label'),
+            'writers'=> Writer::all('id', 'name AS label'),
+        ];
     }
 
     /**
@@ -84,6 +99,5 @@ class BookController extends Controller
     {
         $book->delete();
         return response()->json('deleted');
-
     }
 }

@@ -10,4 +10,11 @@ class Magazine extends Model
 {
     use HasFactory;
     use HasApiTokens;
+
+    protected $fillable = [
+        'image',
+        'name',
+        'slug',
+        'price',
+    ];
 }
