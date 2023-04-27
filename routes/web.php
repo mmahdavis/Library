@@ -18,12 +18,7 @@ use Inertia\Inertia;
 */
 
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
+    return Inertia::render('IndexView');
 });
 
 Route::middleware([
@@ -48,7 +43,9 @@ Route::middleware([
     Route::get('/magazines', function () {
         return Inertia::render('MagazinesView'); })->name('magazines');
     Route::get('/special_issue', function () {
-        return Inertia::render('SpecialIssuesView'); })->name('special_issue');
+        return Inertia::render('SpecialIssuesView'); })->name('special_issues');
     Route::get('/profile', function () {
-        return Inertia::render('HomeView'); })->name('profile');
+        return Inertia::render('ProfileView'); })->name('profile');
+    Route::get('/notifications', function () {
+        return Inertia::render('NotificationsView'); })->name('notifications');
 });

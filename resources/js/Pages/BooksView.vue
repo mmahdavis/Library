@@ -9,6 +9,7 @@ import {
     mdiCurrencyUsd,
     mdiImageArea,
 } from "@mdi/js";
+import { Head } from '@inertiajs/vue3';
 import SectionMain from "@/components/SectionMain.vue";
 import NotificationBar from "@/components/NotificationBar.vue";
 import Books from "@/components/Tables/Books.vue";
@@ -17,14 +18,13 @@ import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.vue";
 import BaseButton from "@/components/BaseButton.vue";
 import CardBoxComponentEmpty from "@/Components/CardBoxComponentEmpty.vue";
-import { onBeforeMount, onMounted, reactive, ref } from "vue";
+import { reactive, ref } from "vue";
 import CardBoxModal from "@/Components/CardBoxModal.vue";
 import FormField from "@/Components/FormField.vue";
 import FormControl from "@/Components/FormControl.vue";
 import BaseDivider from "@/Components/BaseDivider.vue";
 import BaseButtons from "@/Components/BaseButtons.vue";
 import NotificationBarInCard from "@/Components/NotificationBarInCard.vue";
-import { useMainStore } from "@/Stores/main";
 import axios from "axios";
 
 const selectOptions = reactive({
@@ -84,7 +84,7 @@ const fromInsertSubmit = () => {
             formStatusCurrent.value = 1;
         })
         .catch(function (error) {
-            notificationText.value = error;
+            notificationText.value = error.response.data.message;
             formStatusCurrent.value = 2
         });
 };
@@ -92,6 +92,7 @@ const fromInsertSubmit = () => {
 
 <template>
     <LayoutAuthenticated>
+        <Head title="Books" />
         <SectionMain>
             <CardBoxModal v-model="isModalInsertActive" title="Add New Book" has-cancel>
                 <template v-slot:Notification>

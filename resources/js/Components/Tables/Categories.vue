@@ -98,6 +98,7 @@ const notificationText = ref('');
 const formStatusCurrent = ref(0);
 const formStatusOptions = ["info", "success", "danger", "warning"];
 function editDetails(category) {
+    notificationText.value = null;
     isModalUpdateActive.value = true;
     form.id = category.id
     form.slug = category.slug;
@@ -109,11 +110,11 @@ const formUpdateSubmit = () => {
         slug: form.slug,
     })
         .then((response) => {
-            isModalUpdateActive = false
+            isModalUpdateActive.value = false
             emit('updateCategories')
         })
         .catch((error) => {
-            notificationText.value = error;
+            notificationText.value = error.response.data.message;
             formStatusCurrent.value = 2
         });
 };

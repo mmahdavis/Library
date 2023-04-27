@@ -14,15 +14,6 @@ use Illuminate\Http\Request;
 
 class BookController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \App\Http\Resources\BookCollection;
-     */
-    public function index()
-    {
-        return new BookCollection(Book::orderByDesc('created_at')->get());
-    }
     public function data()
     {
         return $data = [
@@ -35,13 +26,13 @@ class BookController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display a listing of the resource.
      *
-     * @param  int  $id
+     * @return \App\Http\Resources\BookCollection;
      */
-    public function show($id)
+    public function index()
     {
-        return new BookResource(Book::find($id));
+        return new BookCollection(Book::orderByDesc('created_at')->get());
     }
 
     /**
@@ -52,11 +43,11 @@ class BookController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'category_id' => 'required',
-            'tag_id' => 'required',
-            'publisher_id' => 'required',
-            'translator_id' => 'required',
-            'writer_id' => 'required',
+            // 'category_id' => 'required',
+            // 'tag_id' => 'required',
+            // 'publisher_id' => 'required',
+            // 'translator_id' => 'required',
+            // 'writer_id' => 'required',
             'code' => 'required|unique:books|max:8',
             'name' => 'required',
             'price' => 'required',
@@ -64,6 +55,16 @@ class BookController extends Controller
         ]);
         Book::create($validatedData);
         return response()->json($validatedData);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     */
+    public function show(Book $book)
+    {
+        return new BookResource($book);
     }
 
     /**
@@ -75,11 +76,11 @@ class BookController extends Controller
     public function update(Request $request, Book $book)
     {
         $validatedData = $request->validate([
-            'category_id' => 'required',
-            'tag_id' => 'required',
-            'publisher_id' => 'required',
-            'translator_id' => 'required',
-            'writer_id' => 'required',
+            // 'category_id' => 'required',
+            // 'tag_id' => 'required',
+            // 'publisher_id' => 'required',
+            // 'translator_id' => 'required',
+            // 'writer_id' => 'required',
             'code' => 'required|max:8|unique:books,code,' . $request->code . ',code',
             'name' => 'required',
             'price' => 'required',

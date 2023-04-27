@@ -4,6 +4,7 @@ import {
     mdiPlus,
     mdiBookMultipleOutline,
 } from "@mdi/js";
+import { Head } from '@inertiajs/vue3';
 import SectionMain from "@/components/SectionMain.vue";
 import Publishers from "@/components/Tables/Publishers.vue";
 import CardBox from "@/components/CardBox.vue";
@@ -49,7 +50,7 @@ const fromInsertSubmit = () => {
             getPublisher()
         })
         .catch((error) => {
-            notificationText.value = error;
+            notificationText.value = error.response.data.message;
             formStatusCurrent.value = 2
         });
 };
@@ -57,6 +58,7 @@ const fromInsertSubmit = () => {
 
 <template>
     <LayoutAuthenticated>
+        <Head title="Publishers" />
         <SectionMain>
             <CardBoxModal v-model="isModalInsertActive" title="Add New Publisher" has-cancel>
                 <template v-slot:Notification>

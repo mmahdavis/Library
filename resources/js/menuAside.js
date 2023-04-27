@@ -31,7 +31,7 @@ export default [
         icon: mdiMagazinePistol,
     },
     {
-        route: "special_issue",
+        route: "special_issues",
         label: "Special Issues",
         icon: mdiFileStarFourPoints,
     },

@@ -3,6 +3,7 @@
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\MagazineController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PublisherController;
 use App\Http\Controllers\SpecialIssueController;
 use App\Http\Controllers\TagController;
@@ -148,4 +149,24 @@ Route::prefix('v1/specialIssues')->controller(SpecialIssueController::class)->gr
 
     // Delete an specialIssue
     Route::delete('/{specialIssue}', 'destroy')->name('specialIssues.destroy');
+});
+
+Route::prefix('v1/notifications')->controller(NotificationController::class)->group(function () {
+    // Get all notifications
+    Route::get('', 'index')->name('notifications.index');
+
+    // Get all notifications for user
+    Route::get('/{user_id}', 'filterByUser')->name('notifications.filterByUser');
+
+    // Get a single notification
+    // Route::get('/{id}', 'show')->name('notifications.show');
+
+    // Create a new notification
+    Route::post('', 'store')->name('notifications.store');
+
+    // Update an existing notification
+    Route::put('/{notification}', 'update')->name('notifications.update');
+
+    // Delete an notification
+    Route::delete('/{notification}', 'destroy')->name('notifications.destroy');
 });

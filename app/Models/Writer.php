@@ -13,6 +13,7 @@ class Writer extends Model
     use HasApiTokens;
 
     protected $fillable = [
+        'image',
         'name',
         'slug',
     ];

@@ -71,32 +71,8 @@ const form = reactive({
     image: "https://fakeimg.pl/320/"
 });
 
-const notificationText = ref('');
-const formStatusCurrent = ref(0);
-const formStatusOptions = ["info", "success", "danger", "warning"];
-const formUpdateSubmit = () => {
-    axios.put('http://localhost:8000/api/v1/books/' + form.id, {
-        category_id: 1,
-        tag_id: 1,
-        publisher_id: 1,
-        translator_id: 1,
-        writer_id: 1,
-        code: form.code,
-        name: form.name,
-        price: form.price,
-        image: form.image
-    })
-        .then(function (response) {
-            isModalUpdateActive.value = false;
-            emit('updateBooks')
-        })
-        .catch(function (error) {
-            notificationText.value = error;
-            formStatusCurrent.value = 2
-        });
-};
-
 function editDetails(book) {
+    notificationText.value = null;
     isModalUpdateActive.value = true;
     form.id = book.id
     form.code = book.code;
@@ -109,6 +85,31 @@ function editDetails(book) {
     form.translator_id = prop.selectOptions.translator_id[book.translator_id ?? 0]
     form.writer_id = prop.selectOptions.writer_id[book.writer_id ?? 0]
 }
+
+const notificationText = ref('');
+const formStatusCurrent = ref(0);
+const formStatusOptions = ["info", "success", "danger", "warning"];
+const formUpdateSubmit = () => {
+    axios.put('http://localhost:8000/api/v1/books/' + form.id, {
+        category_id: null,
+        tag_id: null,
+        publisher_id: null,
+        translator_id: null,
+        writer_id: null,
+        code: form.code,
+        name: form.name,
+        price: form.price,
+        image: form.image
+    })
+        .then(function (response) {
+            isModalUpdateActive.value = false;
+            emit('updateBooks')
+        })
+        .catch(function (error) {
+            notificationText.value = error.response.data.message;
+            formStatusCurrent.value = 2
+        });
+};
 
 const item = ref('')
 function deleteItem(id) {

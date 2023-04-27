@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             SpecialIssueSeeder::class,
             MagazineSeeder::class,
             CommentSeeder::class,
+            NotificationSeeder::class,
         ]);
         // \App\Models\User::factory(10)->create();
 

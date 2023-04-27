@@ -15,6 +15,7 @@ class SpecialIssue extends Model
     protected $fillable = [
         'name',
         'slug',
+        'price',
     ];
 
     /**

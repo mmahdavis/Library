@@ -101,6 +101,7 @@ const notificationText = ref('');
 const formStatusCurrent = ref(0);
 const formStatusOptions = ["info", "success", "danger", "warning"];
 function editDetails(publisher) {
+    notificationText.value = null;
     isModalUpdateActive.value = true;
     form.id = publisher.id
     form.name = publisher.name;
@@ -119,7 +120,7 @@ const formUpdateSubmit = () => {
         })
         .catch((error) => {
             console.log(error);
-            notificationText.value = error;
+            notificationText.value = error.response.data.message;
             formStatusCurrent.value = 2
         });
 };

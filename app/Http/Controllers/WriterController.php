@@ -3,29 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\WriterCollection;
+use App\Http\Resources\WriterResource;
 use App\Models\Writer;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 
 class WriterController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \App\Http\Resources\WriterCollection;
-     */
     public function index()
     {
-        return new WriterCollection(Writer::all());
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     */
-    public function store(Request $request)
-    {
+        return new WriterCollection(Writer::orderByDesc('created_at')->get());
     }
 
     /**
@@ -35,6 +21,23 @@ class WriterController extends Controller
      */
     public function show($id)
     {
+        return new WriterResource(Writer::find($id));
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     */
+    public function store(Request $request)
+    {
+        $validatedData = $request->validate([
+            'image' => 'required',
+            'name' => 'required',
+            'slug' => 'required|unique:writers',
+        ]);
+        Writer::create($validatedData);
+        return response()->json($validatedData);
     }
 
     /**
@@ -43,8 +46,15 @@ class WriterController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Writer $writer)
     {
+        $validatedData = $request->validate([
+            'image' => 'required',
+            'name' => 'required',
+            'slug' => 'required|unique:writers,slug,' . $request->slug . ',slug',
+        ]);
+        $writer->update($validatedData);
+        return response()->json($writer);
     }
 
     /**
@@ -52,7 +62,9 @@ class WriterController extends Controller
      *
      * @param  int  $id
      */
-    public function destroy($id)
+    public function destroy(Writer $writer)
     {
+        $writer->delete();
+        return response()->json('deleted');
     }
 }

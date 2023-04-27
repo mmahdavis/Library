@@ -4,6 +4,7 @@ import {
     mdiPlus,
     mdiBookMultipleOutline,
 } from "@mdi/js";
+import { Head } from '@inertiajs/vue3';
 import SectionMain from "@/components/SectionMain.vue";
 import NotificationBar from "@/components/NotificationBar.vue";
 import Categories from "@/components/Tables/Categories.vue";
@@ -48,7 +49,7 @@ const fromInsertSubmit = () => {
             getCategories()
         })
         .catch((error) => {
-            notificationText.value = error;
+            notificationText.value = error.response.data.message;
             formStatusCurrent.value = 2
         });
 };
@@ -56,8 +57,9 @@ const fromInsertSubmit = () => {
 
 <template>
     <LayoutAuthenticated>
+        <Head title="Categories" />
         <SectionMain>
-            <CardBoxModal v-model="isModalInsertActive" title="Add New Book" has-cancel>
+            <CardBoxModal v-model="isModalInsertActive" title="Add New Category" has-cancel>
                 <template v-slot:Notification>
                     <NotificationBarInCard v-if=notificationText :color="formStatusOptions[formStatusCurrent]"
                         :is-placed-with-header="true">

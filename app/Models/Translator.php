@@ -13,10 +13,11 @@ class Translator extends Model
     use HasApiTokens;
 
     protected $fillable = [
+        'image',
         'name',
         'slug',
     ];
-    
+
     /**
      * Get all of the books for the Translator
      */
